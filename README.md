@@ -1,4 +1,4 @@
-# Automatizacija_istrazivanja_kripto_valuta
+# Automatizacija istraživanja kripto valuta
 
 Proračun analize sentimenta nastupa nakon što svi Crawler-i zabrše poslove. Startovanje Crawlera radi prikupljanja članaka se vrši na sledeći način:
   
