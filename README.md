@@ -10,3 +10,4 @@
 - Python 3.x.x
 - Linux OS (tested on ARCH)
 - pip install -r requirements.txt
+- Run Splash ==> docker run -p 8050:8050 scrapinghub/splash --max-timeout 3600 <==. Splash docker image is automatically downloaded if not detected.
