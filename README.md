@@ -9,3 +9,4 @@
 
 - Python 3.x.x
 - Linux OS (tested on ARCH)
+- pip install -r requirements.txt
