@@ -1,6 +1,6 @@
 import os
 import indicators
-import decision_tree_model as dtMain
+import start_trading as dtMain
 
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report
