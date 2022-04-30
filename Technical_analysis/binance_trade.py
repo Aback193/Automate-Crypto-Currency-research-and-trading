@@ -1,4 +1,4 @@
-# Don't name this file binance.py othervise strange errors occur!
+# Don't name this file binance.py otherwise strange errors occur!
 from binance.client import Client   # pip install python-binance
 import datetime
 import os
