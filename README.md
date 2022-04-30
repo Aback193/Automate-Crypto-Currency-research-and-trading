@@ -5,3 +5,6 @@
 
 ##### Skripta namenjena za pokretanje trgovine, nalazi se unutar Technical_analysis foldera: `python start_trading.py`
 
+## Preduslov
+
+- Python 3.x.x
