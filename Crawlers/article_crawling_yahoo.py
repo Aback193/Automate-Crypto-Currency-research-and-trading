@@ -26,7 +26,7 @@ class YahooSpider(scrapy.Spider):
             'scrapy_fake_useragent.providers.FixedUserAgentProvider',  # fall back to USER_AGENT value
         ],
         'USER_AGENT':'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.74 Safari/537.36'
-        #'ROTATING_PROXY_LIST_PATH':'./Lists/proxy_list'
+        #'ROTATING_PROXY_LIST_PATH':'../Lists/proxy_list'
     }
 
     # Create search requests.
