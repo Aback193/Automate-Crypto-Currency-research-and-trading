@@ -4,6 +4,7 @@ Proračun analize sentimenta nastupa nakon što svi Crawler-i zabrše poslove. S
   
   python app.py
   
+
 Skripta namenjena za pokretanje trgovine, nalazi se unutar Technical_analysis foldera:
   
   python start_trading.py
