@@ -53,7 +53,7 @@ def total_ticker_sentiment(sentiment_scores, TICKERS, SPIDERS):
         total_sentiment[spider] = ticker_sentiment
     return total_sentiment
 
-# Check if CUDA device is available. Must go with try, because it throws exception when GPU is busy.
+# Check if CUDA device is available
 def check_cuda():
     try:
         if cuda.is_available():
