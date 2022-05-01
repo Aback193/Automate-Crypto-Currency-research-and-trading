@@ -3,7 +3,7 @@
 # pip install scrapy-rotating-proxies           # form user:pass@ip:port
 import scrapy
 
-DEPTH_LIMIT = 2
+DEPTH_LIMIT = 4
 RESULTS_LIST = []
 
 # Crawler Class
