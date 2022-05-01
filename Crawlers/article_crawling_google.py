@@ -73,7 +73,7 @@ class GoogleSpider(scrapy.Spider):
             for url in links:
                 if 'https://' in url:
                     res = re.findall(r'(https?://\S+)', url)[0].split('&')[0].rstrip('\\"')
-                    if not str(res).__contains__(".google.") and not str(res).__contains__("cointelegraph.com") and(str(res).__contains__(".com/") or str(res).__contains__(".net/")) and not urls.__contains__(res):
+                    if not str(res).__contains__(".google.") and not str(res).__contains__("cointelegraph.com") and not str(res).__contains__("cnyes.com") and(str(res).__contains__(".com/") or str(res).__contains__(".net/")) and not urls.__contains__(res):
                         urls.append(res)
                         #print(res)
                         yield scrapy.Request(res, callback = self.parse_content, meta={'message':str(response.meta['message'])})
