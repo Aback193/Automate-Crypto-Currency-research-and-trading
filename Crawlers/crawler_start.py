@@ -20,7 +20,7 @@ def run_crawlers(TICKERS, TIMESPAN_NEWS_SEARCH, SPIDERS):
     print("=>>> Crawlers gathering articles... <<<=")
     s = get_project_settings()
     s.update({
-        "LOG_ENABLED": "True"
+        "LOG_ENABLED": "False"
     })
     runner = CrawlerRunner(s)
     @defer.inlineCallbacks
