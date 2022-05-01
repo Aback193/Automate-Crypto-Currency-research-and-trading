@@ -1,6 +1,6 @@
 # Automatizacija istraživanja kripto valuta
 
-##### Proračun analize sentimenta nastupa nakon što svi Crawler-i završe poslove. Startovanje Crawler-a radi prikupljanja članaka: `python app.py`
+##### Proračun analize sentimenta nastupa nakon što svi Crawler-i završe poslove. Rezultati se upisuju u `Sentiment.csv` i `Sentiment.xlsx` fajlove. Startovanje Crawler-a radi prikupljanja članaka: `python app.py`
   
 
 ##### Skripta namenjena za pokretanje trgovine, nalazi se unutar Technical_analysis foldera: `python start_trading.py`. Skripta najpre učitava rezultate sentimentalne analize. Stoga je proračun sentimenta (barem jednom) neophodan za startovanje trgovine. Binance.com API ključ je neophodan za trgovinu. Ključ se upisuje u `start_trading.py` i `binance_trade.py` unutar Technical_analysis foldera. To mogu biti i dva različita ključa.
