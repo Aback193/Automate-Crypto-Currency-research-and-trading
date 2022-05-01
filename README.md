@@ -5,9 +5,10 @@
 
 ##### Skripta namenjena za pokretanje trgovine, nalazi se unutar Technical_analysis foldera: `python start_trading.py`
 
+##### Testirano na Linux OS - ARCH
+
 ## Preduslov
 
-- Linux OS (tested on ARCH)
 - Python 3.x.x
 - `pip install -r requirements.txt`
 - Docker
