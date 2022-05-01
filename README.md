@@ -3,7 +3,7 @@
 ##### Proračun analize sentimenta nastupa nakon što svi Crawler-i završe poslove. Startovanje Crawler-a radi prikupljanja članaka: `python app.py`
   
 
-##### Skripta namenjena za pokretanje trgovine, nalazi se unutar Technical_analysis foldera: `python start_trading.py`
+##### Skripta namenjena za pokretanje trgovine, nalazi se unutar Technical_analysis foldera: `python start_trading.py`. Skripta najpre učitava rezultate sentimentalne analize. Stoga je proračun sentimenta (barem jednom) neophodan za startovanje trgovine.
 
 ##### Testirano na Linux OS - ARCH
 
