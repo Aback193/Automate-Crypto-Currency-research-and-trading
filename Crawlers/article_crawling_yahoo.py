@@ -39,7 +39,7 @@ class YahooSpider(scrapy.Spider):
         # Extract clean URLS
         links = response.xpath("//div[contains(@class, 'NewsArticle')]/ul/li/h4/a/@href").extract()
         for url in links:
-            if url is not None and not str(url).__contains__("cointelegraph.com"):
+            if url is not None and not str(url).__contains__("cointelegraph.com") and(str(url).__contains__(".com/") or str(url).__contains__(".net/")):
                 yield scrapy.Request(url, callback = self.parse_content, meta={'message':str(response.meta['message'])})
 
         # Go to next page
