@@ -1,7 +1,7 @@
 import scrapy
 from scrapy_splash import SplashRequest
 
-DEPTH_LIMIT = 1
+DEPTH_LIMIT = 2
 RESULTS_LIST = []
 
 # Crawler Class
