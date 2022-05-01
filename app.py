@@ -2,7 +2,7 @@ from Crawlers import crawler_start
 import article_sentiment
 import helper_methods
 
-# Stock related variables
+# Coin related variables
 TICKERS = ["BTC", "ETH"]
 TIMESPAN_NEWS_SEARCH = "d"      # For google search. "d" = day, "w" = week, "m" = month
 
