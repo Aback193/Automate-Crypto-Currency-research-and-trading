@@ -119,7 +119,7 @@ def getInitialHistoricalData():
 def save_model(model):
     joblib.dump(model, subfolderModels+"random_forest_"+ticker+"_"+timeframe+".joblib")
 
-# Calculate indicatos with fresh data from Yahoo or Binance !!!! NEED TO MAKE IT LAST 20 CANDLES BASED ON TF !!!!
+# Calculate indicatos with fresh data from Yahoo or Binance
 def freshIndicatorCalculations():
     try:
         todayTemp = datetime.date.today()
