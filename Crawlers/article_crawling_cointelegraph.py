@@ -1,96 +1,77 @@
+import time
 import scrapy
-from scrapy_splash import SplashRequest
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 
-from scrapy.crawler import CrawlerProcess
-from scrapy.utils.project import get_project_settings
-import re
-
-DEPTH_LIMIT = 4
+DEPTH_LIMIT = 5
 RESULTS_LIST = []
+
+# Create chrome driver, headless by default
+def create_webdriver():
+    chrome_options = Options()
+    prefs = {"credentials_enable_service": False, "profile.password_manager_enabled": False}
+    chrome_options.add_experimental_option("prefs", prefs)
+    chrome_options.add_argument('--disable-blink-features=AutomationControlled')
+    chrome_options.add_experimental_option("excludeSwitches", ['enable-automation'])
+    chrome_options.add_argument("user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.74 Safari/537.36")
+    chrome_options.add_argument('--headless')
+    chrome_options.add_argument('--disable-gpu')
+    #chrome_options.add_argument("window-size=1400,850")
+    driver = webdriver.Chrome(options=chrome_options)
+    return driver
 
 # Crawler Class
 class CointelegraphSpider(scrapy.Spider):
     name = 'CointelegraphSpider'
     custom_settings = {
-        'LOG_ENABLED': True,
+        'LOG_ENABLED': False,
         'DEPTH_LIMIT': DEPTH_LIMIT,
         'DOWNLOADER_MIDDLEWARES':{
             'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware': None,
             'scrapy.downloadermiddlewares.retry.RetryMiddleware': None,
             'scrapy_fake_useragent.middleware.RandomUserAgentMiddleware': 400,
             'scrapy_fake_useragent.middleware.RetryUserAgentMiddleware': 401,
-            'scrapy_splash.SplashCookiesMiddleware': 723,
-            'scrapy_splash.SplashMiddleware': 725,
-            'scrapy.downloadermiddlewares.httpcompression.HttpCompressionMiddleware': 810,
             #'rotating_proxies.middlewares.RotatingProxyMiddleware': 610,
             #'rotating_proxies.middlewares.BanDetectionMiddleware': 620,
-        },
-        'SPIDER_MIDDLEWARES':{
-            'scrapy_splash.SplashDeduplicateArgsMiddleware': 100,
         },
         'FAKEUSERAGENT_PROVIDERS':[
             'scrapy_fake_useragent.providers.FakeUserAgentProvider',  # this is the first provider we'll try
             'scrapy_fake_useragent.providers.FakerProvider',  # if FakeUserAgentProvider fails, we'll use faker to generate a user-agent
             'scrapy_fake_useragent.providers.FixedUserAgentProvider',  # fall back to USER_AGENT value
         ],
-        'USER_AGENT':'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.74 Safari/537.36',
-        #'ROTATING_PROXY_LIST_PATH':'../Lists/proxy_list',
-        'SPLASH_URL':'http://0.0.0.0:8050',
-        'DUPEFILTER_CLASS':'scrapy_splash.SplashAwareDupeFilter',
-        'HTTPCACHE_STORAGE':'scrapy_splash.SplashAwareFSCacheStorage'
-    }
-
-    # Saves html of each page in array. Page number passed as argument. Returns html array in response
-    script_google_next_page = """
-    function main(splash, args)
-        assert(splash:go(args.url))
-        assert(splash:wait(2))
-        local result = {}
-        for i = 0,tonumber(args.depth),1
-        do
-            input_box = assert(splash:select("a[id=pnnext]"))
-            input_box:mouse_click()
-            assert(splash:wait(5))
-            result[i] = splash:html()
-        end
-        return result
-    end"""
-
-    splash_args = {
-        'wait': 2,
-        'depth': DEPTH_LIMIT,
-        'lua_source': script_google_next_page
+        'USER_AGENT':'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.74 Safari/537.36'
+        #'ROTATING_PROXY_LIST_PATH':'../Lists/proxy_list'
     }
 
     # Create search requests.
     def start_requests(self):
-        TICKERS = ["bitcoin", "ethereum"]
-        TIMESPAN_NEWS_SEARCH = "d"
-        for ticker in TICKERS:
-            yield SplashRequest('https://www.google.com/search?q={}+site:cointelegraph.com&source=lnt&tbs=qdr:{}'.format(ticker, TIMESPAN_NEWS_SEARCH), meta={'message':str(ticker)}, callback = self.parse, endpoint='execute', args = self.splash_args) # Cointelegraph JS needed
+        for ticker in self.TICKERS:
+            try:
+                driver = create_webdriver()
+                driver.get('https://cointelegraph.com/search?query={}'.format(ticker))
+                for i in range(0, DEPTH_LIMIT):                    
+                    driver.execute_script("document.querySelectorAll('div.search-nav__load-more a')[0].click()")
+                    time.sleep(5)
+                # Extract Links
+                links = []
+                link_elements = driver.find_elements_by_xpath("//h2[@class='header']/a")    # Cointelegraph extract links
+                for el in link_elements:
+                    links.append(el.get_attribute("href"))
+                for i, url in enumerate(links):
+                    if url is not None:
+                        #print("{}.{}".format(i+1, url))
+                        yield scrapy.Request(url, callback = self.parse, meta={'message':str(ticker)})
+                driver.close()
+                driver.quit()
+            except Exception as e:
+                print(print("Exception {}".format(e)))
 
-    # Extract Google search resulting links.
     def parse(self, response):
-        links = []
-        urls = []
-        try:
-            [links.append(r) for r in response.xpath("//div/a/@href").extract() if r not in links]      # Google extract links and remove duplicates.
-            for url in links:
-                if 'https://cointelegraph.com/news/' in url:
-                    res = re.findall(r'(https?://\S+)', url)[0].split('&')[0].rstrip('\\"')
-                    if not str(res).__contains__(".google") and not urls.__contains__(res):
-                        urls.append(res)
-                        print("Link: {}".format(res))
-                        yield scrapy.Request(res, callback = self.parse_content, meta={'message':str(response.meta['message'])})
-        except Exception as e:
-            print(print("Exception {}".format(e)))
-            
-    def parse_content(self, response):
         global RESULTS_LIST
         try:
             text = [' '.join(line.strip() for line in p.xpath('.//text()').extract() if line.strip()) for p in response.xpath('//p')]
             text_str = ' '.join([str(item) for item in text])
-            print("\nTicker {}  Link {}".format(str(response.meta['message']), response.url))
+            #print("\nTicker {}  Link {}".format(str(response.meta['message']), response.url))
             RESULTS_LIST.append({"Ticker":str(response.meta['message']), "Link":response.url, "Text":text_str})
         except Exception as e:
             print(print("Exception {}".format(e)))
@@ -99,9 +80,3 @@ class CointelegraphSpider(scrapy.Spider):
 # Return crawler results.
 def get_CointelegraphSpider():
     return RESULTS_LIST
-
-
-if __name__ == "__main__":
-    process = CrawlerProcess(get_project_settings())
-    process.crawl(CointelegraphSpider)
-    process.start()
