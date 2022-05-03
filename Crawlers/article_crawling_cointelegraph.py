@@ -49,6 +49,7 @@ class CointelegraphSpider(scrapy.Spider):
             try:
                 driver = create_webdriver()
                 driver.get('https://cointelegraph.com/search?query={}'.format(ticker))
+                time.sleep(5)
                 for i in range(0, DEPTH_LIMIT):                    
                     driver.execute_script("document.querySelectorAll('div.search-nav__load-more a')[0].click()")
                     time.sleep(5)
