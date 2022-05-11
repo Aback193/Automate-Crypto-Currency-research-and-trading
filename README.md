@@ -9,7 +9,7 @@
 
 ## Preduslov
 
-- Python 3.x.x
+- Python 3.X.X
 - `pip install -r requirements.txt`
 - Docker
 - `docker run -p 8050:8050 scrapinghub/splash --max-timeout 3600`
